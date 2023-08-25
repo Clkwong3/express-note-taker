@@ -7,8 +7,8 @@ router.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
-// GET Route for feedback page
-router.get("/feedback", (req, res) => {
+// GET Route for notes page
+router.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/notes.html"));
 });
 
