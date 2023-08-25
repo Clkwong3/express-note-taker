@@ -64,6 +64,8 @@ router.post("/notes", (req, res) => {
 });
 
 // Function to generate a unique ID
-function generateUniqueId() {}
+function generateUniqueId() {
+  return uuidv4();
+}
 
 module.exports = router;
