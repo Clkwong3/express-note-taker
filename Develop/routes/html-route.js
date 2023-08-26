@@ -1,3 +1,4 @@
+// Import modules
 const express = require("express");
 const router = express.Router();
 const path = require("path");
@@ -17,4 +18,5 @@ router.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, "../public/404.html"));
 });
 
+// Export the router
 module.exports = router;

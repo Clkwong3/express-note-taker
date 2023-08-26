@@ -1,3 +1,4 @@
+// Import modules
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
@@ -12,6 +13,7 @@ router.get("/notes", async (req, res) => {
     // Reads the data from the file system and parse JSON asynchronously
     const data = await fs.promises.readFile("../db/db.json", "utf8");
     const notes = JSON.parse(data);
+
     res.json(notes);
   } catch (error) {
     // Handle error while reading file
@@ -68,4 +70,5 @@ function generateUniqueId() {
   return uuidv4();
 }
 
+// Export the router
 module.exports = router;
