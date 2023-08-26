@@ -7,10 +7,10 @@ const path = require("path");
 const dbFilePath = path.join(__dirname, "../db/db.json");
 
 // GET Route for getting notes
-router.get("/notes", (req, res) => {
+router.get("/notes", async (req, res) => {
   try {
-    // Reads the data from the file system and parse JSON
-    const data = fs.readFileSync(dbFilePath, "utf8");
+    // Reads the data from the file system and parse JSON asynchronously
+    const data = await fs.promises.readFile("../db/db.json", "utf8");
     const notes = JSON.parse(data);
     res.json(notes);
   } catch (error) {
@@ -21,7 +21,7 @@ router.get("/notes", (req, res) => {
 });
 
 // POST Route for creating a new note
-router.post("/notes", (req, res) => {
+router.post("/notes", async (req, res) => {
   // Log the incoming request body for debugging purposes
   console.log(req.body);
 
@@ -45,8 +45,8 @@ router.post("/notes", (req, res) => {
       // Add the new note to the array of existing notes
       notes.push(newNote);
 
-      // Write the updated notes back to the db.json file
-      fs.writeFileSync(dbFilePath, JSON.stringify(notes), "utf8");
+      // Write the updated notes back to the db.json file asynchronously
+      await fs.writeFileSync(dbFilePath, JSON.stringify(notes), "utf8");
 
       // Respond with the newly created note
       res.json(newNote);
