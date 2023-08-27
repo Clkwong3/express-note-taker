@@ -62,22 +62,17 @@ router.post("/notes", async (req, res) => {
   }
 });
 
-// DELETE Route for deleting a note by ID
-router.delete("/notes", async (req, res) => {
-  const { id } = req.body; // Extract id from the request body
-
-  if (!id) {
-    // Check if id is provided in the request
-    return res.status(400).json({ error: "Id is required to delete a note" });
-  }
+router.delete("/notes/:id", async (req, res) => {
+  const noteId = req.params.id; // Extract note ID from the request parameters
 
   try {
     // Read existing data from db.json file
     const data = await fs.promises.readFile("./db/db.json", "utf8");
+
     let notes = JSON.parse(data);
 
-    // Find the index of the note to be deleted based on its id
-    const noteIndex = notes.findIndex((note) => note.id === id);
+    // Find the index of the note to be deleted based on its ID
+    const noteIndex = notes.findIndex((note) => note.id === noteId);
 
     if (noteIndex !== -1) {
       // Remove the note from the array
@@ -89,6 +84,7 @@ router.delete("/notes", async (req, res) => {
         JSON.stringify(notes),
         "utf8"
       );
+
       // Respond with success message
       res.json({ message: "Note deleted successfully" });
     } else {
@@ -98,7 +94,13 @@ router.delete("/notes", async (req, res) => {
   } catch (error) {
     // Handle errors during the note deletion process
     console.error("Error deleting a note:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+
+    // If the error is due to file not found, provide a more helpful error message
+    if (error.code === "ENOENT") {
+      res.status(404).json({ error: "Database file not found" });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 });
 
