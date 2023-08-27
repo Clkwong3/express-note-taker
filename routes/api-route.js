@@ -2,16 +2,13 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
-
-const path = require("path");
-
-const dbFilePath = path.join(__dirname, "../db/db.json");
+const { v4: uuidv4 } = require("uuid");
 
 // GET Route for getting notes
 router.get("/notes", async (req, res) => {
   try {
     // Reads the data from the file system and parse JSON asynchronously
-    const data = await fs.promises.readFile("../db/db.json", "utf8");
+    const data = await fs.promises.readFile("./db/db.json", "utf8");
     const notes = JSON.parse(data);
 
     res.json(notes);
@@ -34,21 +31,21 @@ router.post("/notes", async (req, res) => {
   if (title && text) {
     try {
       // Read existing data from the db.json file
-      const data = fs.readFileSync(dbFilePath, "utf8");
+      const data = await fs.readFileSync("./db/db.json", "utf8");
       const notes = JSON.parse(data);
 
       // Create a new note object with the provided title and text
       const newNote = {
         title,
         text,
-        id: generateUniqueId(), // Create unique IDs for each note
+        id: uuidv4(), // Create unique IDs for each note
       };
 
       // Add the new note to the array of existing notes
       notes.push(newNote);
 
       // Write the updated notes back to the db.json file asynchronously
-      await fs.writeFileSync(dbFilePath, JSON.stringify(notes), "utf8");
+      fs.writeFileSync("./db/db.json", JSON.stringify(notes), "utf8");
 
       // Respond with the newly created note
       res.json(newNote);
@@ -64,11 +61,6 @@ router.post("/notes", async (req, res) => {
       .json({ error: "Invalid data provided for creating a note" });
   }
 });
-
-// Function to generate a unique ID
-function generateUniqueId() {
-  return uuidv4();
-}
 
 // Export the router
 module.exports = router;
