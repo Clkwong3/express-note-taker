@@ -62,5 +62,47 @@ router.post("/notes", async (req, res) => {
   }
 });
 
+// DELETE Route for deleting a note by ID
+router.delete("/notes", async (req, res) => {
+  const { title } = req.body; // Extract title from the request body
+
+  if (!title) {
+    // Check if title is provided in the request
+    return res
+      .status(400)
+      .json({ error: "Title is required to delete a note" });
+  }
+
+  try {
+    // Read existing data from db.json file
+    const data = await fs.promises.readFile("./db/db.json", "utf8");
+    let notes = JSON.parse(data);
+
+    // Find the index of the note to be deleted based on its title
+    const noteIndex = notes.findIndex((note) => note.title === title);
+
+    if (noteIndex !== -1) {
+      // Remove the note from the array
+      notes.splice(noteIndex, 1);
+
+      // Write the updated notes back to the db.json file asynchronously
+      await fs.promises.writeFile(
+        "./db/db.json",
+        JSON.stringify(notes),
+        "utf8"
+      );
+      // Respond with success message
+      res.json({ message: "Note deleted successfully" });
+    } else {
+      // Respond with an error if given title is not found
+      res.status(404).json({ error: "Note not found" });
+    }
+  } catch (error) {
+    // Handle errors during the note deletion process
+    console.error("Error deleting a note:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Export the router
 module.exports = router;
