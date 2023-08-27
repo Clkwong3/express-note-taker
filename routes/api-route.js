@@ -64,13 +64,11 @@ router.post("/notes", async (req, res) => {
 
 // DELETE Route for deleting a note by ID
 router.delete("/notes", async (req, res) => {
-  const { title } = req.body; // Extract title from the request body
+  const { text } = req.body; // Extract text from the request body
 
-  if (!title) {
-    // Check if title is provided in the request
-    return res
-      .status(400)
-      .json({ error: "Title is required to delete a note" });
+  if (!text) {
+    // Check if text is provided in the request
+    return res.status(400).json({ error: "Text is required to delete a note" });
   }
 
   try {
@@ -78,8 +76,8 @@ router.delete("/notes", async (req, res) => {
     const data = await fs.promises.readFile("./db/db.json", "utf8");
     let notes = JSON.parse(data);
 
-    // Find the index of the note to be deleted based on its title
-    const noteIndex = notes.findIndex((note) => note.title === title);
+    // Find the index of the note to be deleted based on its text
+    const noteIndex = notes.findIndex((note) => note.text === text);
 
     if (noteIndex !== -1) {
       // Remove the note from the array
@@ -94,7 +92,7 @@ router.delete("/notes", async (req, res) => {
       // Respond with success message
       res.json({ message: "Note deleted successfully" });
     } else {
-      // Respond with an error if given title is not found
+      // Respond with an error if given text is not found
       res.status(404).json({ error: "Note not found" });
     }
   } catch (error) {
