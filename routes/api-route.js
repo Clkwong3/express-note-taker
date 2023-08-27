@@ -62,6 +62,8 @@ router.post("/notes", async (req, res) => {
   }
 });
 
+// DELETE Route for deleting a note by ID
+// :id -> in insomnia, the preview shows id. In the url, replace :id with the id of note to delete
 router.delete("/notes/:id", async (req, res) => {
   const noteId = req.params.id; // Extract note ID from the request parameters
 
