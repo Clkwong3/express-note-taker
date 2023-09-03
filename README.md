@@ -58,10 +58,6 @@ Here is the link to the starter code for this project:
 
 - Starter Code: [miniature-eureka](https://github.com/coding-boot-camp/miniature-eureka)
 
-Here is the link to the Heroku App:
-
-- URL: [Note-Taker App](https://secure-chamber-56945-d422ff8d56cc.herokuapp.com/)
-
 ## Contact-Me
 
 If you encounter any issues, please report them on the project's [GitHub repository](https://github.com/Clkwong3/express-note-taker).
