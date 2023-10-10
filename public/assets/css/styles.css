@@ -76,3 +76,11 @@ body {
   padding: 20px;
   cursor: pointer;
 }
+
+.edit-note {
+  margin-right: 30px; 
+}
+
+.delete-note {
+  margin-right: 30px;
+}

@@ -31,7 +31,7 @@ router.post("/notes", async (req, res) => {
   if (title && text) {
     try {
       // Read existing data from the db.json file
-      const data = await fs.readFileSync("./db/db.json", "utf8");
+      const data = fs.readFileSync("./db/db.json", "utf8");
       const notes = JSON.parse(data);
 
       // Create a new note object with the provided title and text
@@ -59,6 +59,63 @@ router.post("/notes", async (req, res) => {
     res
       .status(400)
       .json({ error: "Invalid data provided for creating a note" });
+  }
+});
+
+// PUT Route for updating a note by ID
+router.put("/notes/:id", async (req, res) => {
+  const noteId = req.params.id; // Extract note ID from the request parameters
+
+  // Log the incoming request body for debugging purposes
+  console.log(req.body);
+
+  // Destructure properties from the request body
+  const { title, text } = req.body;
+
+  // Check if both title and text properties exist in the request body
+  if (title && text) {
+    try {
+      // Read existing data from the db.json file
+      const data = await fs.promises.readFile("./db/db.json", "utf8");
+      let notes = JSON.parse(data);
+
+      // Find the index of the note to be updated based on its ID
+      const noteIndex = notes.findIndex((note) => note.id === noteId);
+
+      if (noteIndex !== -1) {
+        // Update the note with the new title and text
+        notes[noteIndex].title = title;
+        notes[noteIndex].text = text;
+
+        // Write the updated notes back to the db.json file asynchronously
+        await fs.promises.writeFile(
+          "./db/db.json",
+          JSON.stringify(notes),
+          "utf8"
+        );
+
+        // Respond with the updated note
+        res.json(notes[noteIndex]);
+      } else {
+        // Respond with an error if given id is not found
+        res.status(404).json({ error: "Note not found" });
+      }
+    } catch (error) {
+      // Handle errors during the note update process
+      console.error("Error updating a note:", error);
+
+      // If the error is due to file not found, provide a more helpful error message
+      if (error.code === "ENOENT") {
+        res.status(404).json({ error: "Database file not found" });
+      } else {
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    }
+  } else {
+    // Respond with an error if title or text is missing from the request body
+    res
+      .status(400)
+      .json({ error: "Invalid data provided for updating a note" });
   }
 });
 

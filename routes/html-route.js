@@ -13,10 +13,5 @@ router.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/notes.html"));
 });
 
-// Catch-all route for 404 page
-router.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, "../public/404.html"));
-});
-
 // Export the router
 module.exports = router;
